@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fancy Calculator</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap (optional) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            font-family: "Poppins", sans-serif;
+        }
+
+        .card {
+            backdrop-filter: blur(18px);
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 40px;
+            width: 420px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            color: white;
+            animation: fadeIn 1.2s ease-in-out;
+        }
+
+        .card h2 {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        input, select {
+            height: 50px;
+            border-radius: 12px;
+            border: none;
+            padding-left: 15px;
+            font-size: 16px;
+        }
+
+        button {
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+        }
+
+        #result, #error {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        #result {
+            color: #a8ffbf;
+        }
+
+        #error {
+            color: #ff7b7b;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(35px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glow input focus */
+        input:focus, select:focus {
+            outline: none;
+            box-shadow: 0 0 12px #ffffffa1;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <h2>✨ Fancy Calculator ✨</h2>
+
+        <form id="calcForm">
+            <div class="mb-3">
+                <input type="text" name="x" class="form-control" placeholder="Enter first number" required>
+            </div>
+
+            <div class="mb-3">
+                <input type="text" name="y" class="form-control" placeholder="Enter second number" required>
+            </div>
+
+            <div class="mb-3">
+                <select name="operation" class="form-select" required>
+                    <option value="">Select Operation</option>
+                    <option value="addition">Addition</option>
+                    <option value="subtraction">Subtraction</option>
+                    <option value="multiplication">Multiplication</option>
+                    <option value="division">Division</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn w-100">Calculate</button>
+        </form>
+
+        <div id="result"></div>
+        <div id="error"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('calcForm');
+        
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            document.getElementById('result').innerText = "";
+            document.getElementById('error').innerText = "";
+
+            const formData = new FormData(form);
+
+            const response = await fetch('/calculator', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.status === "success") {
+                document.getElementById('result').innerText = "Result = " + data.result;
+            } else {
+                document.getElementById('error').innerText = data.message;
+            }
+        });
+    </script>
+
+</body>
+</html>
